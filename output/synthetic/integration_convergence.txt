@@ -1,0 +1,29 @@
++==============================================================================+
+|          SMART ENERGY CONSUMPTION PREDICTION & ANALYSIS SYSTEM               |
+|     Computational Methods Lab (ES-251) - Project Based Learning              |
+|     Delhi Technical Campus (GGSIPU)                                          |
+|     Methods: Interpolation | Integration | Root Finding                      |
++------------------------------------------------------------------------------+
+|  Team: 1. Vaibhav (Team Leader)   Enrollment No. 01118015625                 |
+|        2. Aksh Rastogi            Enrollment No. 02518015625                 |
+|        3. Akshay Kumar            Enrollment No. 00618015625                 |
+|        4. Apurva Kr. Yadav        Enrollment No. 02418015625                 |
+|        5. Vaibhav Sharma          Enrollment No. 00518015625                 |
++==============================================================================+
+Dataset: Synthetic Delhi household, summer day (hourly, 5 readings lost)
+
+2C. Convergence study: error vs step size h (exact model)
+=========================================================
+  Exact energy (erf formula) = 30.6881991914 kWh
+  Observed order p = log2( |E(2h)| / |E(h)| ). Theory: Trapezoidal 2, Simpson 4.
+
+  +---------+-----+-------------+------+-------------+------+-------------+------+
+  |  h (h)  |  n  | Trap. error |  p   | Simp1/3 err |  p   | Simp3/8 err |  p   |
+  +---------+-----+-------------+------+-------------+------+-------------+------+
+  |   2.000 |  12 |  -5.819e-02 |  --  |  -8.124e-01 |  --  |  +9.483e-01 |  --  |
+  |   1.000 |  24 |  -2.522e-02 | 1.21 |  -1.423e-02 | 5.84 |  +1.985e-02 | 5.58 |
+  |   0.500 |  48 |  -6.398e-03 | 1.98 |  -1.228e-04 | 6.86 |  -2.410e-04 | 6.36 |
+  |   0.250 |  96 |  -1.605e-03 | 2.00 |  -7.389e-06 | 4.05 |  -1.684e-05 | 3.84 |
+  |   0.125 | 192 |  -4.016e-04 | 2.00 |  -4.573e-07 | 4.01 |  -1.032e-06 | 4.03 |
+  +---------+-----+-------------+------+-------------+------+-------------+------+
+  At large h the peaks are under-sampled, so p only settles as h gets small.

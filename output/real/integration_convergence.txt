@@ -1,0 +1,30 @@
++==============================================================================+
+|          SMART ENERGY CONSUMPTION PREDICTION & ANALYSIS SYSTEM               |
+|     Computational Methods Lab (ES-251) - Project Based Learning              |
+|     Delhi Technical Campus (GGSIPU)                                          |
+|     Methods: Interpolation | Integration | Root Finding                      |
++------------------------------------------------------------------------------+
+|  Team: 1. Vaibhav (Team Leader)   Enrollment No. 01118015625                 |
+|        2. Aksh Rastogi            Enrollment No. 02518015625                 |
+|        3. Akshay Kumar            Enrollment No. 00618015625                 |
+|        4. Apurva Kr. Yadav        Enrollment No. 02418015625                 |
+|        5. Vaibhav Sharma          Enrollment No. 00518015625                 |
++==============================================================================+
+Dataset: Real household, UCI dataset, 14-May-2007 (hourly, 5 readings hidden)
+
+2C. Sampling study: how often must the meter read? (real 1-minute data)
+=======================================================================
+  Metered energy (sum of 1-minute averages) = 24.4630 kWh
+
+  +-------------+----------+---------------+---------------+---------------+
+  | Read every  | Readings | Trap. error % | Simp1/3 err % | Simp3/8 err % |
+  +-------------+----------+---------------+---------------+---------------+
+  |  120 min    |       13 |       -14.434 |        -7.736 |       -14.806 |
+  |   60 min    |       25 |        +5.318 |       +11.902 |        +2.933 |
+  |   30 min    |       49 |        +1.525 |        +0.260 |        +1.320 |
+  |   15 min    |       97 |        -1.915 |        -3.062 |        -2.227 |
+  |    5 min    |      289 |        -1.077 |        -0.436 |        -0.972 |
+  |    1 min    |     1441 |        +0.007 |        -0.139 |        -0.133 |
+  +-------------+----------+---------------+---------------+---------------+
+  The error does not fall smoothly like h^2 or h^4: real load jumps when appliances
+  switch on/off, so how OFTEN the meter reads matters more than WHICH rule is used.

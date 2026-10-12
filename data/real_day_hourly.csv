@@ -1,0 +1,28 @@
+# UCI household, 14/5/2007: hourly smart-meter readings
+# Hours 4, 9, 13, 14, 19 removed on purpose (NA) to simulate lost readings
+time_hours,power_kW
+0,0.316
+1,0.382
+2,0.280
+3,0.288
+4,NA
+5,0.380
+6,0.344
+7,1.378
+8,1.578
+9,NA
+10,0.386
+11,0.442
+12,0.298
+13,NA
+14,NA
+15,0.346
+16,0.632
+17,0.452
+18,2.552
+19,NA
+20,0.876
+21,4.558
+22,2.568
+23,0.800
+24,0.516

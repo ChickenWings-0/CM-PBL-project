@@ -1,0 +1,6 @@
+filled_with,trap_error_kWh,simp13_error_kWh,simp38_error_kWh
+True readings (no gaps),1.300969,2.911636,0.717469
+Linear,-1.833031,-1.352364,-2.673281
+Lagrange (local cubic),-2.280364,-1.878364,-3.185531
+Newton Div. Diff. (local cubic),-2.280364,-1.878364,-3.185531
+Global Lagrange,0.673569,1.392034,0.173747

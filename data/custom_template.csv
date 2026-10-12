@@ -1,0 +1,14 @@
+# Custom dataset template - copy this file and replace the readings with your own.
+# One reading per line: time in decimal hours, power in kW. Use NA for a missing reading.
+# Rules: times strictly increasing; first and last readings must not be NA.
+# Example below: a small shop, readings every 30 minutes from 09:00 to 13:00.
+time_hours,power_kW
+9.0,0.80
+9.5,1.10
+10.0,1.65
+10.5,NA
+11.0,2.40
+11.5,3.10
+12.0,NA
+12.5,3.30
+13.0,2.20

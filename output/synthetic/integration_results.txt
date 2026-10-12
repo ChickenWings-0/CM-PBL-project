@@ -1,0 +1,48 @@
++==============================================================================+
+|          SMART ENERGY CONSUMPTION PREDICTION & ANALYSIS SYSTEM               |
+|     Computational Methods Lab (ES-251) - Project Based Learning              |
+|     Delhi Technical Campus (GGSIPU)                                          |
+|     Methods: Interpolation | Integration | Root Finding                      |
++------------------------------------------------------------------------------+
+|  Team: 1. Vaibhav (Team Leader)   Enrollment No. 01118015625                 |
+|        2. Aksh Rastogi            Enrollment No. 02518015625                 |
+|        3. Akshay Kumar            Enrollment No. 00618015625                 |
+|        4. Apurva Kr. Yadav        Enrollment No. 02418015625                 |
+|        5. Vaibhav Sharma          Enrollment No. 00518015625                 |
++==============================================================================+
+Dataset: Synthetic Delhi household, summer day (hourly, 5 readings lost)
+
+2A. Energy by each integration rule
+===================================
+  Dataset: Synthetic Delhi household, summer day (hourly, 5 readings lost)
+  Missing readings filled with: Lagrange (local cubic)
+  Peak window: 18:00 to 22:00
+
+  +----------------------+------------+----------+------------+----------+
+  | Rule                 |  Day (kWh) | Error %  | Peak (kWh) | Error %  |
+  +----------------------+------------+----------+------------+----------+
+  | Exact (erf formula)  |    30.6882 |     --   |    11.5152 |     --   |
+  | Trapezoidal          |    30.7326 |   +0.145 |    11.4276 |   -0.760 |
+  | Simpson 1/3          |    30.7896 |   +0.330 |    11.6151 |   +0.868 |
+  | Simpson 3/8          |    30.7686 |   +0.262 |    11.5574*|   +0.366 |
+  +----------------------+------------+----------+------------+----------+
+  * interval count not a multiple of 2 (Simpson 1/3) or 3 (Simpson 3/8):
+    leftover interval(s) were integrated with the trapezoidal rule.
+
+  Average power over the day : 1.283 kW (Simpson 1/3)
+  Share of energy in peak window: 37.7 %
+
+2B. Error carried through the chain: gap-filling method x integration rule
+==========================================================================
+  Full-day energy error (kWh) = computed - Exact (erf formula) (30.6882 kWh)
+  +----------------------------------+--------------+--------------+--------------+
+  | Missing readings filled with     |  Trapezoidal |  Simpson 1/3 |  Simpson 3/8 |
+  +----------------------------------+--------------+--------------+--------------+
+  | (none: true readings, no gaps)   |      -0.0252 |      -0.0142 |      +0.0198 |
+  | Linear                           |      -0.1682 |      -0.1598 |      -0.1329 |
+  | Lagrange (local cubic)           |      +0.0445 |      +0.1014 |      +0.0804 |
+  | Newton Div. Diff. (local cubic)  |      +0.0445 |      +0.1014 |      +0.0804 |
+  | Global Lagrange                  |      -0.9121 |      -0.7388 |      -0.9922 |
+  +----------------------------------+--------------+--------------+--------------+
+  First row = error of the integration rule alone (hourly sampling).
+  Other rows = integration error + error from the estimated readings.

@@ -1,2 +1,15 @@
-# Auto detect text files and perform LF normalization
+# Store text with LF line endings; check out with the platform's own endings
 * text=auto
+
+# Windows batch files must keep CRLF to run correctly in cmd
+*.bat text eol=crlf
+
+# Binary files: never touch line endings
+*.png binary
+*.woff2 binary
+*.exe binary
+
+# Generated or vendored files: hide from diffs and language statistics
+web/data/results.js linguist-generated=true -diff
+web/vendor/** linguist-vendored=true
+output/** linguist-generated=true

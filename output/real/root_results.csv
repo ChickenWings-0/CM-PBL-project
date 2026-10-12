@@ -1,0 +1,13 @@
+event,method,root_h,hh_mm_ss,iterations,converged,abs_f_root,solver_error_h,model_error_min
+crossing_1_up,Bisection,20.4952325821,20:29:43,18,1,8.383e-008,2.114e-008,-17.6894
+crossing_1_up,Regula Falsi,20.4952326022,20:29:43,4,1,1.637e-007,4.130e-008,-17.6894
+crossing_1_up,Newton-Raphson,20.4952325609,20:29:43,4,1,6.217e-015,5.329e-014,-17.6894
+crossing_1_up,Secant,20.4952325610,20:29:43,3,1,1.161e-010,2.935e-011,-17.6894
+crossing_2_down,Bisection,21.8487215042,21:50:55,18,1,2.416e-006,8.543e-007,-0.6595
+crossing_2_down,Regula Falsi,21.8487206485,21:50:55,4,1,4.092e-009,1.447e-009,-0.6595
+crossing_2_down,Newton-Raphson,21.8487206499,21:50:55,3,1,1.776e-015,2.842e-014,-0.6595
+crossing_2_down,Secant,21.8487206499,21:50:55,4,1,1.155e-014,2.487e-014,-0.6595
+budget,Bisection,20.6913652420,20:41:29,18,1,7.297e-007,1.960e-007,76.4211
+budget,Regula Falsi,20.6913654356,20:41:29,5,1,8.704e-009,2.338e-009,76.4212
+budget,Newton-Raphson,20.6913654380,20:41:29,4,1,1.776e-015,4.974e-014,76.4212
+budget,Secant,20.6913654380,20:41:29,4,1,9.025e-011,2.429e-011,76.4212

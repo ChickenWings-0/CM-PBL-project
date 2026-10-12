@@ -1,0 +1,90 @@
+event,method,k,x_k,abs_error_h
+crossing_1_up,Bisection,1,20.375000000000,1.202e-001
+crossing_1_up,Bisection,2,20.437500000000,5.773e-002
+crossing_1_up,Bisection,3,20.468750000000,2.648e-002
+crossing_1_up,Bisection,4,20.484375000000,1.086e-002
+crossing_1_up,Bisection,5,20.492187500000,3.045e-003
+crossing_1_up,Bisection,6,20.496093750000,8.612e-004
+crossing_1_up,Bisection,7,20.494140625000,1.092e-003
+crossing_1_up,Bisection,8,20.495117187500,1.154e-004
+crossing_1_up,Bisection,9,20.495605468750,3.729e-004
+crossing_1_up,Bisection,10,20.495361328125,1.288e-004
+crossing_1_up,Bisection,11,20.495239257812,6.697e-006
+crossing_1_up,Bisection,12,20.495178222656,5.434e-005
+crossing_1_up,Bisection,13,20.495208740234,2.382e-005
+crossing_1_up,Bisection,14,20.495223999023,8.562e-006
+crossing_1_up,Bisection,15,20.495231628418,9.325e-007
+crossing_1_up,Bisection,16,20.495235443115,2.882e-006
+crossing_1_up,Bisection,17,20.495233535767,9.748e-007
+crossing_1_up,Bisection,18,20.495232582092,2.114e-008
+crossing_1_up,Regula Falsi,1,20.495492470037,2.599e-004
+crossing_1_up,Regula Falsi,2,20.495246641952,1.408e-005
+crossing_1_up,Regula Falsi,3,20.495233323548,7.626e-007
+crossing_1_up,Regula Falsi,4,20.495232602248,4.130e-008
+crossing_1_up,Newton-Raphson,1,20.492031849075,3.201e-003
+crossing_1_up,Newton-Raphson,2,20.495229504894,3.056e-006
+crossing_1_up,Newton-Raphson,3,20.495232560945,2.757e-012
+crossing_1_up,Newton-Raphson,4,20.495232560948,5.329e-014
+crossing_1_up,Secant,1,20.495492470037,2.599e-004
+crossing_1_up,Secant,2,20.495232186157,3.748e-007
+crossing_1_up,Secant,3,20.495232560977,2.935e-011
+crossing_2_down,Bisection,1,21.875000000000,2.628e-002
+crossing_2_down,Bisection,2,21.812500000000,3.622e-002
+crossing_2_down,Bisection,3,21.843750000000,4.971e-003
+crossing_2_down,Bisection,4,21.859375000000,1.065e-002
+crossing_2_down,Bisection,5,21.851562500000,2.842e-003
+crossing_2_down,Bisection,6,21.847656250000,1.064e-003
+crossing_2_down,Bisection,7,21.849609375000,8.887e-004
+crossing_2_down,Bisection,8,21.848632812500,8.784e-005
+crossing_2_down,Bisection,9,21.849121093750,4.004e-004
+crossing_2_down,Bisection,10,21.848876953125,1.563e-004
+crossing_2_down,Bisection,11,21.848754882812,3.423e-005
+crossing_2_down,Bisection,12,21.848693847656,2.680e-005
+crossing_2_down,Bisection,13,21.848724365234,3.715e-006
+crossing_2_down,Bisection,14,21.848709106445,1.154e-005
+crossing_2_down,Bisection,15,21.848716735840,3.914e-006
+crossing_2_down,Bisection,16,21.848720550537,9.938e-008
+crossing_2_down,Bisection,17,21.848722457886,1.808e-006
+crossing_2_down,Bisection,18,21.848721504211,8.543e-007
+crossing_2_down,Regula Falsi,1,21.847224985081,1.496e-003
+crossing_2_down,Regula Falsi,2,21.848705777658,1.487e-005
+crossing_2_down,Regula Falsi,3,21.848720503191,1.467e-007
+crossing_2_down,Regula Falsi,4,21.848720648466,1.447e-009
+crossing_2_down,Newton-Raphson,1,21.848789439839,6.879e-005
+crossing_2_down,Newton-Raphson,2,21.848720650474,5.601e-010
+crossing_2_down,Newton-Raphson,3,21.848720649914,2.842e-014
+crossing_2_down,Secant,1,21.847224985081,1.496e-003
+crossing_2_down,Secant,2,21.848705777658,1.487e-005
+crossing_2_down,Secant,3,21.848720652560,2.646e-009
+crossing_2_down,Secant,4,21.848720649914,2.487e-014
+budget,Bisection,1,20.625000000000,6.637e-002
+budget,Bisection,2,20.687500000000,3.865e-003
+budget,Bisection,3,20.718750000000,2.738e-002
+budget,Bisection,4,20.703125000000,1.176e-002
+budget,Bisection,5,20.695312500000,3.947e-003
+budget,Bisection,6,20.691406250000,4.081e-005
+budget,Bisection,7,20.689453125000,1.912e-003
+budget,Bisection,8,20.690429687500,9.358e-004
+budget,Bisection,9,20.690917968750,4.475e-004
+budget,Bisection,10,20.691162109375,2.033e-004
+budget,Bisection,11,20.691284179688,8.126e-005
+budget,Bisection,12,20.691345214844,2.022e-005
+budget,Bisection,13,20.691375732422,1.029e-005
+budget,Bisection,14,20.691360473633,4.964e-006
+budget,Bisection,15,20.691368103027,2.665e-006
+budget,Bisection,16,20.691364288330,1.150e-006
+budget,Bisection,17,20.691366195679,7.577e-007
+budget,Bisection,18,20.691365242004,1.960e-007
+budget,Regula Falsi,1,20.685699261968,5.666e-003
+budget,Regula Falsi,2,20.691221346506,1.441e-004
+budget,Regula Falsi,3,20.691361790097,3.648e-006
+budget,Regula Falsi,4,20.691365345634,9.234e-008
+budget,Regula Falsi,5,20.691365435638,2.338e-009
+budget,Newton-Raphson,1,20.693589543499,2.224e-003
+budget,Newton-Raphson,2,20.691367669654,2.232e-006
+budget,Newton-Raphson,3,20.691365437977,2.206e-012
+budget,Newton-Raphson,4,20.691365437975,4.974e-014
+budget,Secant,1,20.685699261968,5.666e-003
+budget,Secant,2,20.691221346506,1.441e-004
+budget,Secant,3,20.691365809407,3.714e-007
+budget,Secant,4,20.691365437951,2.429e-011

@@ -1,0 +1,22 @@
+# Compiled program (rebuild with build.bat or gcc)
+energy.exe
+energy
+*.exe
+*.o
+*.obj
+
+# Results for a user's own CSV (Menu 1 -> 3) are personal; the synthetic and
+# real results in output/ are kept because the report and web page use them
+output/custom/
+
+# Python
+__pycache__/
+*.pyc
+
+# Editors and OS files
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini

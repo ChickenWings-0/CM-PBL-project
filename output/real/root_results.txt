@@ -1,0 +1,155 @@
++==============================================================================+
+|          SMART ENERGY CONSUMPTION PREDICTION & ANALYSIS SYSTEM               |
+|     Computational Methods Lab (ES-251) - Project Based Learning              |
+|     Delhi Technical Campus (GGSIPU)                                          |
+|     Methods: Interpolation | Integration | Root Finding                      |
++------------------------------------------------------------------------------+
+|  Team: 1. Vaibhav (Team Leader)   Enrollment No. 01118015625                 |
+|        2. Aksh Rastogi            Enrollment No. 02518015625                 |
+|        3. Akshay Kumar            Enrollment No. 00618015625                 |
+|        4. Apurva Kr. Yadav        Enrollment No. 02418015625                 |
+|        5. Vaibhav Sharma          Enrollment No. 00518015625                 |
++==============================================================================+
+Dataset: Real household, UCI dataset, 14-May-2007 (hourly, 5 readings hidden)
+
+3. Root finding: comparison of Bisection, Regula Falsi, Newton-Raphson, Secant
+==============================================================================
+  Dataset: Real household, UCI dataset, 14-May-2007 (hourly, 5 readings hidden)
+  Solver error = |root - x*|, x* = bisection to 1e-13 on the SAME curve (method accuracy).
+  Model error  = root - TRUE time, in minutes (accuracy of the data + interpolation).
+  Curve: local cubic (Lagrange) through the 20 known readings
+  Tolerance  1e-06 h, scan step 0.25 h (15 min), Newton slope by central difference
+
+  (a) When does the load cross 3.00 kW?   Solve  P(t) - 3.00 = 0
+
+  Crossing 1: load RISES above 3.00 kW
+  Bracket from scan: [20.25, 20.50] h
+  +----------------+-------------+----------+------+----------+------------+-----------+-------+
+  | Method         |   Root (h)  | HH:MM:SS | Iter | |f(root)| | Solver err |Model err  |Order p|
+  |                |             |          |      |          |    (h)     |  (min)    |       |
+  +----------------+-------------+----------+------+----------+------------+-----------+-------+
+  | Bisection      |  20.4952326 | 20:29:43 |   18 |  8.4e-08 |   2.11e-08 |   -17.689 |   1*  |
+  | Regula Falsi   |  20.4952326 | 20:29:43 |    4 |  1.6e-07 |   4.13e-08 |   -17.689 |  1.00 |
+  | Newton-Raphson |  20.4952326 | 20:29:43 |    4 |  6.2e-15 |   5.33e-14 |   -17.689 |  2.00 |
+  | Secant         |  20.4952326 | 20:29:43 |    3 |  1.2e-10 |   2.93e-11 |   -17.689 |  1.45 |
+  +----------------+-------------+----------+------+----------+------------+-----------+-------+
+  Order p = ln(e_k+1/e_k) / ln(e_k/e_k-1). Theory: Regula Falsi 1, Newton 2, Secant 1.618.
+  * Bisection's error jumps up and down (see history), so p is not estimated from it;
+    its bracket halves every step, so it converges with order 1 (error ratio 1/2).
+  True time: 20.7900556 h = 20:47:24
+
+  Iteration history: error |x_k - x*| in hours  (x* = 20.4952325609 h)
+  +----+------------+------------+------------+------------+
+  |  k | Bisection  |Regula Falsi|  Newton-R  |   Secant   |
+  +----+------------+------------+------------+------------+
+  |  1 |  1.202e-01 |  2.599e-04 |  3.201e-03 |  2.599e-04 |
+  |  2 |  5.773e-02 |  1.408e-05 |  3.056e-06 |  3.748e-07 |
+  |  3 |  2.648e-02 |  7.626e-07 |  2.757e-12 |  2.935e-11 |
+  |  4 |  1.086e-02 |  4.130e-08 |  5.329e-14 |            |
+  |  5 |  3.045e-03 |            |            |            |
+  |  6 |  8.612e-04 |            |            |            |
+  |  7 |  1.092e-03 |            |            |            |
+  |  8 |  1.154e-04 |            |            |            |
+  |  9 |  3.729e-04 |            |            |            |
+  | 10 |  1.288e-04 |            |            |            |
+  | 11 |  6.697e-06 |            |            |            |
+  | 12 |  5.434e-05 |            |            |            |
+  | 13 |  2.382e-05 |            |            |            |
+  | 14 |  8.562e-06 |            |            |            |
+  | 15 |  9.325e-07 |            |            |            |
+  | 16 |  2.882e-06 |            |            |            |
+  | 17 |  9.748e-07 |            |            |            |
+  | 18 |  2.114e-08 |            |            |            |
+  +----+------------+------------+------------+------------+
+  (true time = nearest crossing in the same direction in the 1-minute data)
+
+  Crossing 2: load FALLS below 3.00 kW
+  Bracket from scan: [21.75, 22.00] h
+  +----------------+-------------+----------+------+----------+------------+-----------+-------+
+  | Method         |   Root (h)  | HH:MM:SS | Iter | |f(root)| | Solver err |Model err  |Order p|
+  |                |             |          |      |          |    (h)     |  (min)    |       |
+  +----------------+-------------+----------+------+----------+------------+-----------+-------+
+  | Bisection      |  21.8487215 | 21:50:55 |   18 |  2.4e-06 |   8.54e-07 |    -0.659 |   1*  |
+  | Regula Falsi   |  21.8487206 | 21:50:55 |    4 |  4.1e-09 |   1.45e-09 |    -0.660 |  1.00 |
+  | Newton-Raphson |  21.8487206 | 21:50:55 |    3 |  1.8e-15 |   2.84e-14 |    -0.660 |  1.97 |
+  | Secant         |  21.8487206 | 21:50:55 |    4 |  1.2e-14 |   2.49e-14 |    -0.660 |  1.87 |
+  +----------------+-------------+----------+------+----------+------------+-----------+-------+
+  Order p = ln(e_k+1/e_k) / ln(e_k/e_k-1). Theory: Regula Falsi 1, Newton 2, Secant 1.618.
+  * Bisection's error jumps up and down (see history), so p is not estimated from it;
+    its bracket halves every step, so it converges with order 1 (error ratio 1/2).
+  True time: 21.8597128 h = 21:51:35
+
+  Iteration history: error |x_k - x*| in hours  (x* = 21.8487206499 h)
+  +----+------------+------------+------------+------------+
+  |  k | Bisection  |Regula Falsi|  Newton-R  |   Secant   |
+  +----+------------+------------+------------+------------+
+  |  1 |  2.628e-02 |  1.496e-03 |  6.879e-05 |  1.496e-03 |
+  |  2 |  3.622e-02 |  1.487e-05 |  5.601e-10 |  1.487e-05 |
+  |  3 |  4.971e-03 |  1.467e-07 |  2.842e-14 |  2.646e-09 |
+  |  4 |  1.065e-02 |  1.447e-09 |            |  2.487e-14 |
+  |  5 |  2.842e-03 |            |            |            |
+  |  6 |  1.064e-03 |            |            |            |
+  |  7 |  8.887e-04 |            |            |            |
+  |  8 |  8.784e-05 |            |            |            |
+  |  9 |  4.004e-04 |            |            |            |
+  | 10 |  1.563e-04 |            |            |            |
+  | 11 |  3.423e-05 |            |            |            |
+  | 12 |  2.680e-05 |            |            |            |
+  | 13 |  3.715e-06 |            |            |            |
+  | 14 |  1.154e-05 |            |            |            |
+  | 15 |  3.914e-06 |            |            |            |
+  | 16 |  9.938e-08 |            |            |            |
+  | 17 |  1.808e-06 |            |            |            |
+  | 18 |  8.543e-07 |            |            |            |
+  +----+------------+------------+------------+------------+
+  (true time = nearest crossing in the same direction in the 1-minute data)
+
+  >> ALERT: load first goes above 3.00 kW at 20:30; total time above limit = 01:21 (h:min)
+  Note: the real 1-minute data crosses 3.00 kW 50 times; hourly readings see only 2.
+        In the 1-minute data the load FIRST goes above 3.00 kW at 07:00.
+
+  (b) When does the day's energy reach 15.00 kWh?   Solve  E(t) - 15.00 = 0
+  E(t) = integral of the curve from 00:00 to t (Simpson 1/3, exact for cubics). Day total = 22.174 kWh
+  Bracket from scan: [20.50, 20.75] h
+  +----------------+-------------+----------+------+----------+------------+-----------+-------+
+  | Method         |   Root (h)  | HH:MM:SS | Iter | |f(root)| | Solver err |Model err  |Order p|
+  |                |             |          |      |          |    (h)     |  (min)    |       |
+  +----------------+-------------+----------+------+----------+------------+-----------+-------+
+  | Bisection      |  20.6913652 | 20:41:29 |   18 |  7.3e-07 |   1.96e-07 |   +76.421 |   1*  |
+  | Regula Falsi   |  20.6913654 | 20:41:29 |    5 |  8.7e-09 |   2.34e-09 |   +76.421 |  1.00 |
+  | Newton-Raphson |  20.6913654 | 20:41:29 |    4 |  1.8e-15 |   4.97e-14 |   +76.421 |  2.00 |
+  | Secant         |  20.6913654 | 20:41:29 |    4 |  9.0e-11 |   2.43e-11 |   +76.421 |  1.62 |
+  +----------------+-------------+----------+------+----------+------------+-----------+-------+
+  Order p = ln(e_k+1/e_k) / ln(e_k/e_k-1). Theory: Regula Falsi 1, Newton 2, Secant 1.618.
+  * Bisection's error jumps up and down (see history), so p is not estimated from it;
+    its bracket halves every step, so it converges with order 1 (error ratio 1/2).
+  True time: 19.4176795 h = 19:25:04
+
+  Iteration history: error |x_k - x*| in hours  (x* = 20.6913654380 h)
+  +----+------------+------------+------------+------------+
+  |  k | Bisection  |Regula Falsi|  Newton-R  |   Secant   |
+  +----+------------+------------+------------+------------+
+  |  1 |  6.637e-02 |  5.666e-03 |  2.224e-03 |  5.666e-03 |
+  |  2 |  3.865e-03 |  1.441e-04 |  2.232e-06 |  1.441e-04 |
+  |  3 |  2.738e-02 |  3.648e-06 |  2.206e-12 |  3.714e-07 |
+  |  4 |  1.176e-02 |  9.234e-08 |  4.974e-14 |  2.429e-11 |
+  |  5 |  3.947e-03 |  2.338e-09 |            |            |
+  |  6 |  4.081e-05 |            |            |            |
+  |  7 |  1.912e-03 |            |            |            |
+  |  8 |  9.358e-04 |            |            |            |
+  |  9 |  4.475e-04 |            |            |            |
+  | 10 |  2.033e-04 |            |            |            |
+  | 11 |  8.126e-05 |            |            |            |
+  | 12 |  2.022e-05 |            |            |            |
+  | 13 |  1.029e-05 |            |            |            |
+  | 14 |  4.964e-06 |            |            |            |
+  | 15 |  2.665e-06 |            |            |            |
+  | 16 |  1.150e-06 |            |            |            |
+  | 17 |  7.577e-07 |            |            |            |
+  | 18 |  1.960e-07 |            |            |            |
+  +----+------------+------------+------------+------------+
+
+  >> ALERT: 15.00 kWh budget used up at 20:41.
+
+  SUMMARY: largest solver error =  8.54e-07 h (3.075 ms); largest model error = 76.42 min.
+  -> Accuracy is limited by the readings and interpolation, not by the root finder.

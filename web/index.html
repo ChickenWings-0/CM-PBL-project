@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Energy Analysis</title>
+  <meta name="description" content="Smart Energy Consumption Prediction and Analysis System: interpolation, integration and root finding on smart-meter data, computed by a C engine.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='8' width='52' height='50' rx='16' fill='%23b4e2d1' stroke='%232f2a35' stroke-width='4'/%3E%3Cpath d='M17 34h8l4-9 6 15 4-8 3 2h7' stroke='%23e2583a' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mascot" data-mascot="happy"></div>
+        <div>
+          <div class="brand-title">Smart Energy</div>
+          <div class="brand-sub">Prediction &amp; Analysis System</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Sections">
+        <a href="#overview" data-view="overview" data-icon="overview"><span>Overview</span></a>
+        <a href="#dataset" data-view="dataset" data-icon="dataset"><span>Dataset</span></a>
+        <a href="#fill" data-view="fill" data-icon="fill"><span>Fill Missing Values</span></a>
+        <a href="#energy" data-view="energy" data-icon="energy"><span>Energy &amp; Bill</span></a>
+        <a href="#alerts" data-view="alerts" data-icon="alert"><span>Threshold Alerts</span></a>
+        <a href="#compare" data-view="compare" data-icon="compare"><span>Method Comparison</span></a>
+        <a href="#tests" data-view="tests" data-icon="tests"><span>Tests</span></a>
+      </nav>
+
+      <div class="engine-card" id="engine-card">
+        <div class="row"><span class="dot"></span><span>Connecting...</span></div>
+      </div>
+      <div class="sidebar-foot">
+        Computational Methods Lab (ES-251)<br>Delhi Technical Campus, GGSIPU
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="main-inner">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow" id="eyebrow"></p>
+            <h1 id="title"></h1>
+            <p class="lede" id="lede"></p>
+          </div>
+          <div class="ds-switch-wrap">
+            <span class="label">Dataset</span>
+            <div class="segmented" id="ds-switch" role="group" aria-label="Dataset">
+              <button type="button" data-ds="synthetic">Synthetic Delhi day</button>
+              <button type="button" data-ds="real">Real UCI day</button>
+            </div>
+          </div>
+        </header>
+
+        <div id="banner"></div>
+
+        <section class="view" id="view-overview"></section>
+        <section class="view" id="view-dataset"></section>
+        <section class="view" id="view-fill"></section>
+        <section class="view" id="view-energy"></section>
+        <section class="view" id="view-alerts"></section>
+        <section class="view" id="view-compare"></section>
+        <section class="view" id="view-tests"></section>
+      </div>
+    </main>
+  </div>
+
+  <script src="vendor/chart.umd.min.js"></script>
+  <script src="data/results.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

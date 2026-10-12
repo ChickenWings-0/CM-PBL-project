@@ -1,0 +1,13 @@
+event,method,root_h,hh_mm_ss,iterations,converged,abs_f_root,solver_error_h,model_error_min
+crossing_1_up,Bisection,19.3944807053,19:23:40,18,1,5.069e-007,5.535e-007,-2.5855
+crossing_1_up,Regula Falsi,19.3944812619,19:23:40,5,1,2.931e-009,3.200e-009,-2.5854
+crossing_1_up,Newton-Raphson,19.3944812587,19:23:40,3,1,8.882e-016,3.908e-014,-2.5854
+crossing_1_up,Secant,19.3944812587,19:23:40,4,1,1.803e-012,1.929e-012,-2.5854
+crossing_2_down,Bisection,21.4277467728,21:25:40,18,1,9.734e-007,9.293e-007,-0.4031
+crossing_2_down,Regula Falsi,21.4277458430,21:25:40,5,1,5.083e-010,4.852e-010,-0.4031
+crossing_2_down,Newton-Raphson,21.4277458435,21:25:40,3,1,1.021e-014,4.974e-014,-0.4031
+crossing_2_down,Secant,21.4277458435,21:25:40,4,1,1.656e-012,1.542e-012,-0.4031
+budget,Bisection,16.9603433609,16:57:37,18,1,2.491e-007,1.957e-007,0.8447
+budget,Regula Falsi,16.9603435554,16:57:37,3,1,1.461e-009,1.147e-009,0.8448
+budget,Newton-Raphson,16.9603435566,16:57:37,3,1,0.000e+000,3.553e-014,0.8448
+budget,Secant,16.9603435566,16:57:37,3,1,1.149e-011,9.063e-012,0.8448
