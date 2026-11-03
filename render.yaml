@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: smart-energy-system
+    runtime: python
+    plan: free
+    buildCommand: bash build.sh
+    startCommand: python web/serve.py
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"

@@ -86,10 +86,16 @@
   function shortNames() { return D().methods.interp_short; }
 
   /* --------------------------------------------------------------- engine */
+  /* where the API lives: empty = same origin; set with ?api=https://host (remembered) */
+  var API_BASE = (window.API_BASE || new URLSearchParams(location.search).get("api") || localStorage.getItem("api_base") || "").replace(/\/$/, "");
+  if (new URLSearchParams(location.search).has("api")) {
+    try { localStorage.setItem("api_base", API_BASE); } catch (e) {}
+  }
+
   function apiRun(ds, p) {
     var q = ["dataset=" + ds, "threshold=" + p.threshold, "budget=" + p.budget, "peak_start=" + p.peak_start,
       "peak_end=" + p.peak_end, "rate=" + p.rate, "fill=" + p.fill, "probe=" + p.probe].join("&");
-    return fetch("/api/run?" + q).then(function (r) {
+    return fetch(API_BASE + "/api/run?" + q).then(function (r) {
       return r.json().then(function (j) {
         if (!r.ok || j.error) throw new Error(j.error || "The C engine returned an error.");
         return j;
@@ -123,13 +129,13 @@
 
     var snap = window.ENERGY_DATA;
     var ping = location.protocol.indexOf("http") === 0
-      ? fetch("/api/ping").then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+      ? fetch(API_BASE + "/api/ping").then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
       : Promise.resolve(null);
 
     ping.then(function (p) {
       if (p && p.engine) {
         return Promise.all([apiRun("synthetic", DEFAULTS), apiRun("real", DEFAULTS),
-          fetch("/api/tests").then(function (r) { return r.json(); })]).then(function (res) {
+          fetch(API_BASE + "/api/tests").then(function (r) { return r.json(); })]).then(function (res) {
           S.data.synthetic = res[0]; S.data.real = res[1]; S.tests = res[2]; S.mode = "live";
         });
       }
@@ -1055,7 +1061,7 @@
     if (btn) btn.addEventListener("click", function () {
       btn.disabled = true;
       el.classList.add("busy");
-      fetch("/api/tests").then(function (r) { return r.json(); }).then(function (j) { if (!j.error) S.tests = j; render(); })
+      fetch(API_BASE + "/api/tests").then(function (r) { return r.json(); }).then(function (j) { if (!j.error) S.tests = j; render(); })
         .catch(function (e) { S.error = e.message; renderBanner(); }).then(function () { el.classList.remove("busy"); });
     });
   };

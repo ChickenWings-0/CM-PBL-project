@@ -23,7 +23,7 @@ import urllib.parse
 
 WEB_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(WEB_DIR)                          # project folder
-# build.bat makes energy.exe; on Linux/Mac the binary may be called either name
+# build.bat makes energy.exe; ./build.sh makes energy (Linux/Mac)
 EXE = next((os.path.join(ROOT, name) for name in ("energy.exe", "energy")
             if os.path.exists(os.path.join(ROOT, name))), os.path.join(ROOT, "energy.exe"))
 
@@ -31,7 +31,7 @@ EXE = next((os.path.join(ROOT, name) for name in ("energy.exe", "energy")
 def run_engine(args):
     """Run energy.exe with args (output file appended) and return (status, json_text)."""
     if not os.path.exists(EXE):
-        return 503, json.dumps({"error": "energy.exe not found - run build.bat first"})
+        return 503, json.dumps({"error": "energy binary not found - run build.bat (Windows) or ./build.sh (Linux/Mac) first"})
     fd, out_path = tempfile.mkstemp(suffix=".json")
     os.close(fd)
     try:
@@ -59,6 +59,16 @@ def number(params, key, default):
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=WEB_DIR, **kwargs)
+
+    def end_headers(self):
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        super().end_headers()
+
+    def do_OPTIONS(self):
+        self.send_response(204)
+        self.end_headers()
 
     def send_json(self, status, text):
         body = text.encode("utf-8")
@@ -101,11 +111,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 
 def main():
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
-    server = http.server.ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    port = int(os.environ.get("PORT", sys.argv[1] if len(sys.argv) > 1 else 8000))
+    server = http.server.ThreadingHTTPServer(("0.0.0.0", port), Handler)
     print("Smart Energy web front-end: http://localhost:%d   (Ctrl+C to stop)" % port)
     if not os.path.exists(EXE):
-        print("WARNING: %s not found - build it first with build.bat" % EXE)
+        print("WARNING: %s not found - build it first with build.bat or ./build.sh" % EXE)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
