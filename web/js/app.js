@@ -86,15 +86,14 @@
   function shortNames() { return D().methods.interp_short; }
 
   /* --------------------------------------------------------------- engine */
-  /* where the API lives: empty = same origin; set with ?api=https://host (remembered) */
   var API_BASE = (window.API_BASE || new URLSearchParams(location.search).get("api") || localStorage.getItem("api_base") || "").replace(/\/$/, "");
   if (new URLSearchParams(location.search).has("api")) {
-    try { localStorage.setItem("api_base", API_BASE); } catch (e) {}
+    try { localStorage.setItem("api_base", API_BASE); } catch (e) { }
   }
 
   function apiRun(ds, p) {
     var q = ["dataset=" + ds, "threshold=" + p.threshold, "budget=" + p.budget, "peak_start=" + p.peak_start,
-      "peak_end=" + p.peak_end, "rate=" + p.rate, "fill=" + p.fill, "probe=" + p.probe].join("&");
+    "peak_end=" + p.peak_end, "rate=" + p.rate, "fill=" + p.fill, "probe=" + p.probe].join("&");
     return fetch(API_BASE + "/api/run?" + q).then(function (r) {
       return r.json().then(function (j) {
         if (!r.ok || j.error) throw new Error(j.error || "The C engine returned an error.");
@@ -128,14 +127,14 @@
     if (VIEWS[h]) S.view = h;
 
     var snap = window.ENERGY_DATA;
-    var ping = location.protocol.indexOf("http") === 0
+    var ping = (location.protocol.indexOf("http") === 0 || API_BASE)
       ? fetch(API_BASE + "/api/ping").then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
       : Promise.resolve(null);
 
     ping.then(function (p) {
       if (p && p.engine) {
         return Promise.all([apiRun("synthetic", DEFAULTS), apiRun("real", DEFAULTS),
-          fetch(API_BASE + "/api/tests").then(function (r) { return r.json(); })]).then(function (res) {
+        fetch(API_BASE + "/api/tests").then(function (r) { return r.json(); })]).then(function (res) {
           S.data.synthetic = res[0]; S.data.real = res[1]; S.tests = res[2]; S.mode = "live";
         });
       }
@@ -346,32 +345,44 @@
       }
     }
     (o.interp || []).forEach(function (m) {
-      ds.push({ label: names[m], data: pairs(den.t, den[DENSE_KEY[m]]), borderColor: m === 3 ? "rgba(116, 87, 168, .7)" : INTERP_COL[m], borderWidth: m === 3 ? 1.6 : 2.2,
-        borderDash: m === 2 ? [7, 5] : [], pointRadius: 0, order: 4 });
+      ds.push({
+        label: names[m], data: pairs(den.t, den[DENSE_KEY[m]]), borderColor: m === 3 ? "rgba(116, 87, 168, .7)" : INTERP_COL[m], borderWidth: m === 3 ? 1.6 : 2.2,
+        borderDash: m === 2 ? [7, 5] : [], pointRadius: 0, order: 4
+      });
     });
     if (o.readings !== false) {
       var known = d.readings.filter(function (r) { return !r.missing; });
-      ds.push({ label: "Meter reading", data: known.map(function (r) { return { x: r.t, y: r.p }; }), showLine: false,
-        pointRadius: 4, pointBackgroundColor: C.ink, pointBorderColor: C.card, pointBorderWidth: 2, borderColor: C.ink, order: 2 });
+      ds.push({
+        label: "Meter reading", data: known.map(function (r) { return { x: r.t, y: r.p }; }), showLine: false,
+        pointRadius: 4, pointBackgroundColor: C.ink, pointBorderColor: C.card, pointBorderWidth: 2, borderColor: C.ink, order: 2
+      });
       var miss = d.readings.filter(function (r) { return r.missing && ok(r.truth); });
       if (miss.length) {
-        ds.push({ label: "Lost reading (true value)", data: miss.map(function (r) { return { x: r.t, y: r.truth }; }), showLine: false,
-          pointRadius: 6.5, pointBackgroundColor: C.card, pointBorderColor: C.ink, pointBorderWidth: 2.2, borderColor: C.ink, order: 1 });
+        ds.push({
+          label: "Lost reading (true value)", data: miss.map(function (r) { return { x: r.t, y: r.truth }; }), showLine: false,
+          pointRadius: 6.5, pointBackgroundColor: C.card, pointBorderColor: C.ink, pointBorderWidth: 2.2, borderColor: C.ink, order: 1
+        });
       }
     }
     if (o.estimate != null) {
       var m = o.estimate;
-      ds.push({ label: "Estimate (" + d.methods.interp_short[m] + ")", data: d.interp.missing.map(function (r) { return { x: r.t, y: r.est[m] }; }),
+      ds.push({
+        label: "Estimate (" + d.methods.interp_short[m] + ")", data: d.interp.missing.map(function (r) { return { x: r.t, y: r.est[m] }; }),
         showLine: false, pointStyle: "rectRot", pointRadius: 6.5, pointBackgroundColor: INTERP_COL[m], pointBorderColor: C.card, pointBorderWidth: 2,
-        borderColor: INTERP_COL[m], order: 0 });
+        borderColor: INTERP_COL[m], order: 0
+      });
     }
     if (o.threshold !== false) {
-      ds.push({ label: fx(thr, 1) + " kW limit", data: [{ x: t0, y: thr }, { x: tn, y: thr }], borderColor: C.ink3, borderDash: [6, 5],
-        borderWidth: 1.6, pointRadius: 0, order: 8 });
+      ds.push({
+        label: fx(thr, 1) + " kW limit", data: [{ x: t0, y: thr }, { x: tn, y: thr }], borderColor: C.ink3, borderDash: [6, 5],
+        borderWidth: 1.6, pointRadius: 0, order: 8
+      });
     }
     if (o.crossings) {
-      ds.push({ label: "Crossing found", data: o.crossings.map(function (x) { return { x: x, y: thr }; }), showLine: false,
-        pointRadius: 7, pointBackgroundColor: C.coral, pointBorderColor: C.card, pointBorderWidth: 2.5, borderColor: C.coral, order: 0 });
+      ds.push({
+        label: "Crossing found", data: o.crossings.map(function (x) { return { x: x, y: thr }; }), showLine: false,
+        pointRadius: 7, pointBackgroundColor: C.coral, pointBorderColor: C.card, pointBorderWidth: 2.5, borderColor: C.coral, order: 0
+      });
     }
     return {
       type: "line",
@@ -380,10 +391,12 @@
         interaction: { mode: "nearest", intersect: false },
         plugins: {
           legend: { labels: { filter: function (it) { return it.text !== ""; } } },
-          tooltip: { callbacks: {
-            title: function (it) { return hhmm(it[0].parsed.x); },
-            label: function (it) { return " " + it.dataset.label + ": " + it.parsed.y.toFixed(3) + " kW"; }
-          } }
+          tooltip: {
+            callbacks: {
+              title: function (it) { return hhmm(it[0].parsed.x); },
+              label: function (it) { return " " + it.dataset.label + ": " + it.parsed.y.toFixed(3) + " kW"; }
+            }
+          }
         },
         scales: { x: timeAxis(t0, tn, o.step), y: valueAxis("Power (kW)", { min: 0, max: ymax }) }
       }
@@ -520,18 +533,18 @@
     var d = D(), syn = S.ds === "synthetic", miss = d.readings.filter(function (r) { return r.missing; });
     var about = syn
       ? '<dl class="kv"><dt>Source</dt><dd>Formula for a Delhi summer day, generated by <span class="mono">load_model.c</span></dd>' +
-        "<dt>Readings</dt><dd>" + d.dataset.n + " (every hour, 00:00 to 24:00), rounded to 0.1 W</dd>" +
-        "<dt>Lost</dt><dd>" + miss.map(function (r) { return hhmm(r.t); }).join(", ") + "</dd>" +
-        "<dt>Truth</dt><dd>Exact P(t) at any time; exact energy " + fx(d.energy.ref_day, 4) + " kWh (erf formula)</dd></dl>" +
-        '<div class="formula" style="margin-top:14px">P(t) = 0.5 + 1.0 g(t; 8, 1.0) + 0.8 g(t; 15, 2.5) + 3.0 g(t; 20.5, 1.5)<br>g(t; μ, σ) = exp(−(t − μ)² / 2σ²)</div>' +
-        '<p class="muted" style="font-size:13px;margin-top:10px">Terms: 0.5 kW always-on base, a morning peak at 08:00, afternoon AC around 15:00 and the evening peak at 20:30 (AC, lights, cooking).</p>'
+      "<dt>Readings</dt><dd>" + d.dataset.n + " (every hour, 00:00 to 24:00), rounded to 0.1 W</dd>" +
+      "<dt>Lost</dt><dd>" + miss.map(function (r) { return hhmm(r.t); }).join(", ") + "</dd>" +
+      "<dt>Truth</dt><dd>Exact P(t) at any time; exact energy " + fx(d.energy.ref_day, 4) + " kWh (erf formula)</dd></dl>" +
+      '<div class="formula" style="margin-top:14px">P(t) = 0.5 + 1.0 g(t; 8, 1.0) + 0.8 g(t; 15, 2.5) + 3.0 g(t; 20.5, 1.5)<br>g(t; μ, σ) = exp(−(t − μ)² / 2σ²)</div>' +
+      '<p class="muted" style="font-size:13px;margin-top:10px">Terms: 0.5 kW always-on base, a morning peak at 08:00, afternoon AC around 15:00 and the evening peak at 20:30 (AC, lights, cooking).</p>'
       : '<dl class="kv"><dt>Source</dt><dd>UCI Machine Learning Repository: Hebrail &amp; Berard (2006), <i>Individual Household Electric Power Consumption</i>, CC BY 4.0</dd>' +
-        "<dt>House</dt><dd>Sceaux, France (7 km from Paris)</dd><dt>Day</dt><dd>14 May 2007, all 1440 minutes present</dd>" +
-        "<dt>Readings</dt><dd>" + d.dataset.n + " hourly samples (the 1-minute value at each hh:00)</dd>" +
-        "<dt>Hidden</dt><dd>" + miss.map(function (r) { return hhmm(r.t); }).join(", ") + "</dd>" +
-        "<dt>Truth</dt><dd>1441 one-minute readings; metered energy " + fx(d.energy.ref_day, 3) + " kWh</dd></dl>" +
-        '<div class="callout butter" style="margin-top:14px"><span class="ic">' + I.icon("info") + "</span><span>The hidden 19:00 reading was a <b>" +
-        fx(miss.filter(function (r) { return r.t === 19; })[0].truth, 2) + " kW</b> peak. Watch what that does to the alerts.</span></div>";
+      "<dt>House</dt><dd>Sceaux, France (7 km from Paris)</dd><dt>Day</dt><dd>14 May 2007, all 1440 minutes present</dd>" +
+      "<dt>Readings</dt><dd>" + d.dataset.n + " hourly samples (the 1-minute value at each hh:00)</dd>" +
+      "<dt>Hidden</dt><dd>" + miss.map(function (r) { return hhmm(r.t); }).join(", ") + "</dd>" +
+      "<dt>Truth</dt><dd>1441 one-minute readings; metered energy " + fx(d.energy.ref_day, 3) + " kWh</dd></dl>" +
+      '<div class="callout butter" style="margin-top:14px"><span class="ic">' + I.icon("info") + "</span><span>The hidden 19:00 reading was a <b>" +
+      fx(miss.filter(function (r) { return r.t === 19; })[0].truth, 2) + " kW</b> peak. Watch what that does to the alerts.</span></div>";
 
     var half = Math.ceil(d.readings.length / 2);
     function tableOf(rows, start) {
@@ -677,7 +690,7 @@
     var spread = Math.max.apply(null, costs) - Math.min.apply(null, costs);
     return '<div class="callout peach" style="margin-top:14px"><span class="ic">' + I.icon("coin") + "</span><span>The three rules disagree by <b>" + rs(spread, 2) +
       "</b> a day, about " + rs(30 * spread, 0) + " over 30 days." + (ok(d.bill.reference && d.bill.reference.day_cost) ?
-      " The bill from the " + (S.ds === "synthetic" ? "exact model" : "meter") + " is " + rs(d.bill.reference.day_cost, 2) + "." : "") + "</span></div>";
+        " The bill from the " + (S.ds === "synthetic" ? "exact model" : "meter") + " is " + rs(d.bill.reference.day_cost, 2) + "." : "") + "</span></div>";
   }
 
   /* ---------------------------------------------------------- energy */
@@ -743,18 +756,25 @@
     mk("ch-area", {
       type: "line",
       /* layers, bottom to top: day area (mint), peak band (solid peach), the curve, the readings */
-      data: { datasets: [
-        { label: "Power curve (" + d.methods.interp_short[d.settings.fill] + ")", data: all, borderColor: C.teal, borderWidth: 2.4, fill: false, pointRadius: 0, order: 1 },
-        { label: "Energy over the day", data: all, borderColor: "transparent", backgroundColor: "#d7efe6", fill: "origin", pointRadius: 0, order: 4, legendMarker: true, pointStyle: "rect" },
-        { label: "Peak window " + hhmm(ps) + "–" + hhmm(pe), data: peak, borderColor: "transparent", backgroundColor: "#ffd2bf", fill: "origin", pointRadius: 0, order: 3, legendMarker: true, pointStyle: "rect" },
-        { label: "Meter reading", data: d.readings.filter(function (r) { return !r.missing; }).map(function (r) { return { x: r.t, y: r.p }; }), showLine: false,
-          pointRadius: 3.5, pointBackgroundColor: C.ink, pointBorderColor: C.card, pointBorderWidth: 1.5, borderColor: C.ink, order: 0 }
-      ] },
+      data: {
+        datasets: [
+          { label: "Power curve (" + d.methods.interp_short[d.settings.fill] + ")", data: all, borderColor: C.teal, borderWidth: 2.4, fill: false, pointRadius: 0, order: 1 },
+          { label: "Energy over the day", data: all, borderColor: "transparent", backgroundColor: "#d7efe6", fill: "origin", pointRadius: 0, order: 4, legendMarker: true, pointStyle: "rect" },
+          { label: "Peak window " + hhmm(ps) + "–" + hhmm(pe), data: peak, borderColor: "transparent", backgroundColor: "#ffd2bf", fill: "origin", pointRadius: 0, order: 3, legendMarker: true, pointStyle: "rect" },
+          {
+            label: "Meter reading", data: d.readings.filter(function (r) { return !r.missing; }).map(function (r) { return { x: r.t, y: r.p }; }), showLine: false,
+            pointRadius: 3.5, pointBackgroundColor: C.ink, pointBorderColor: C.card, pointBorderWidth: 1.5, borderColor: C.ink, order: 0
+          }
+        ]
+      },
       options: {
         interaction: { mode: "nearest", intersect: false },
-        plugins: { tooltip: {
-          filter: function (it) { return !it.dataset.legendMarker; },
-          callbacks: { title: function (it) { return hhmm(it[0].parsed.x); }, label: function (it) { return " " + it.dataset.label + ": " + it.parsed.y.toFixed(3) + " kW"; } } } },
+        plugins: {
+          tooltip: {
+            filter: function (it) { return !it.dataset.legendMarker; },
+            callbacks: { title: function (it) { return hhmm(it[0].parsed.x); }, label: function (it) { return " " + it.dataset.label + ": " + it.parsed.y.toFixed(3) + " kW"; } }
+          }
+        },
         scales: { x: timeAxis(d.dataset.t0, d.dataset.tn), y: valueAxis("Power (kW)", { min: 0 }) }
       }
     });
@@ -764,13 +784,17 @@
       var labels = rowsC.map(function (r) { return r.name.replace(" (local cubic)", "").replace("True readings (no gaps)", "No gaps (true)"); });
       mk("ch-chain", {
         type: "bar",
-        data: { labels: labels, datasets: names.map(function (n, k) {
-          return { label: n, data: rowsC.map(function (r) { return r.err[k]; }), backgroundColor: QUAD_COL[k], borderRadius: 6, borderSkipped: "start", maxBarThickness: 34, categoryPercentage: .7, barPercentage: .9 };
-        }) },
+        data: {
+          labels: labels, datasets: names.map(function (n, k) {
+            return { label: n, data: rowsC.map(function (r) { return r.err[k]; }), backgroundColor: QUAD_COL[k], borderRadius: 6, borderSkipped: "start", maxBarThickness: 34, categoryPercentage: .7, barPercentage: .9 };
+          })
+        },
         options: {
           plugins: { tooltip: { callbacks: { label: function (it) { return " " + it.dataset.label + ": " + (it.parsed.y > 0 ? "+" : "") + it.parsed.y.toFixed(4) + " kWh"; } } } },
-          scales: { x: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 700 } } },
-                    y: valueAxis("Energy error (kWh)", { grid: { color: function (c) { return c.tick.value === 0 ? C.ink3 : C.grid; }, drawTicks: false } }) }
+          scales: {
+            x: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 700 } } },
+            y: valueAxis("Energy error (kWh)", { grid: { color: function (c) { return c.tick.value === 0 ? C.ink3 : C.grid; }, drawTicks: false } })
+          }
         }
       });
     }
@@ -814,7 +838,7 @@
       var E = events[S.eventSel].ev;
       evBlock = '<div class="s12">' + card("", head("Four methods, one equation", (events[S.eventSel].kind === "power" ? "Solve P(t) − " + fx(r.threshold, 1) + " = 0" : "Solve E(t) − " + fx(r.budget, 0) + " = 0") +
         " on the bracket [" + hhmm(E.a) + ", " + hhmm(E.b) + "] found by the scan.", seg("seg-ev", events.map(function (x) { return x.label; }), S.eventSel, true)),
-        methodTable(E) ) + "</div>" +
+        methodTable(E)) + "</div>" +
         '<div class="s6">' + card("", head("Iteration history", "Error |x<sub>k</sub> − x*| in hours, x* = bisection to 10<sup>−13</sup> on the same curve."), historyTable(E)) + "</div>" +
         '<div class="s6">' + card("flexcol", head("Error per iteration", "Log scale: a straight fall is linear convergence, a steepening one is faster."),
           '<div class="chart-box"><canvas id="ch-iter"></canvas></div>') + "</div>";
@@ -841,24 +865,34 @@
     if (ec.true) dsB.push({ label: syn ? "Exact E(t)" : "Metered E(t)", data: pairs(ec.t, ec.true), borderColor: C.ink, borderDash: [5, 4], pointRadius: 0, borderWidth: 1.6, order: 3 });
     dsB.push({ label: fx(r.budget, 0) + " kWh budget", data: [{ x: d.dataset.t0, y: r.budget }, { x: d.dataset.tn, y: r.budget }], borderColor: C.ink3, borderDash: [6, 5], borderWidth: 1.5, pointRadius: 0, order: 4 });
     if (bud.length) dsB.push({ label: "Budget used up", data: bud, showLine: false, pointRadius: 7, pointBackgroundColor: C.teal, pointBorderColor: C.card, pointBorderWidth: 2.5, borderColor: C.teal, order: 0 });
-    mk("ch-budget", { type: "line", data: { datasets: dsB }, options: {
-      interaction: { mode: "nearest", intersect: false },
-      plugins: { tooltip: { callbacks: { title: function (it) { return hhmm(it[0].parsed.x); }, label: function (it) { return " " + it.dataset.label + ": " + it.parsed.y.toFixed(2) + " kWh"; } } } },
-      scales: { x: timeAxis(d.dataset.t0, d.dataset.tn, 4), y: valueAxis("Energy (kWh)", { min: 0 }) } } });
+    mk("ch-budget", {
+      type: "line", data: { datasets: dsB }, options: {
+        interaction: { mode: "nearest", intersect: false },
+        plugins: { tooltip: { callbacks: { title: function (it) { return hhmm(it[0].parsed.x); }, label: function (it) { return " " + it.dataset.label + ": " + it.parsed.y.toFixed(2) + " kWh"; } } } },
+        scales: { x: timeAxis(d.dataset.t0, d.dataset.tn, 4), y: valueAxis("Energy (kWh)", { min: 0 }) }
+      }
+    });
 
     if (events.length) {
       var Ev = events[S.eventSel].ev;
       var dsI = Ev.methods.map(function (m, k) {
-        return { label: m.name, data: m.hist_err.map(function (e, i) { return { x: i + 1, y: Math.max(e, 1e-16) }; }), borderColor: ROOT_COL[k], backgroundColor: ROOT_COL[k],
-          pointStyle: ROOT_MARK[k], pointRadius: 4.5, pointBorderColor: C.card, pointBorderWidth: 1.5, borderWidth: 2 };
+        return {
+          label: m.name, data: m.hist_err.map(function (e, i) { return { x: i + 1, y: Math.max(e, 1e-16) }; }), borderColor: ROOT_COL[k], backgroundColor: ROOT_COL[k],
+          pointStyle: ROOT_MARK[k], pointRadius: 4.5, pointBorderColor: C.card, pointBorderWidth: 1.5, borderWidth: 2
+        };
       });
       var maxK = Math.max.apply(null, Ev.methods.map(function (m) { return m.hist_err.length; }));
       dsI.push({ label: "Tolerance", data: [{ x: 1, y: 1e-6 }, { x: maxK, y: 1e-6 }], borderColor: C.ink3, borderDash: [6, 5], borderWidth: 1.5, pointRadius: 0 });
-      mk("ch-iter", { type: "line", data: { datasets: dsI }, options: {
-        interaction: { mode: "nearest", intersect: false },
-        plugins: { tooltip: { callbacks: { title: function (it) { return "Iteration " + it[0].parsed.x; }, label: function (it) { return " " + it.dataset.label + ": " + it.parsed.y.toExponential(2) + " h"; } } } },
-        scales: { x: valueAxis("Iteration k", { type: "linear", min: 1, max: maxK, ticks: { stepSize: 1, padding: 8, autoSkip: true, maxRotation: 0 } }),
-                  y: valueAxis("|error| (h)", { type: "logarithmic", min: 1e-15, afterBuildTicks: decadesOnly, ticks: { padding: 8, callback: function (v) { var e = Math.log10(v); return Math.abs(e - Math.round(e)) < 1e-9 && Math.round(e) % 3 === 0 ? supPow(Math.round(e)) : ""; } } }) } } });
+      mk("ch-iter", {
+        type: "line", data: { datasets: dsI }, options: {
+          interaction: { mode: "nearest", intersect: false },
+          plugins: { tooltip: { callbacks: { title: function (it) { return "Iteration " + it[0].parsed.x; }, label: function (it) { return " " + it.dataset.label + ": " + it.parsed.y.toExponential(2) + " h"; } } } },
+          scales: {
+            x: valueAxis("Iteration k", { type: "linear", min: 1, max: maxK, ticks: { stepSize: 1, padding: 8, autoSkip: true, maxRotation: 0 } }),
+            y: valueAxis("|error| (h)", { type: "logarithmic", min: 1e-15, afterBuildTicks: decadesOnly, ticks: { padding: 8, callback: function (v) { var e = Math.log10(v); return Math.abs(e - Math.round(e)) < 1e-9 && Math.round(e) % 3 === 0 ? supPow(Math.round(e)) : ""; } } })
+          }
+        }
+      });
     }
   };
 
@@ -973,52 +1007,98 @@
     if (cv && cv.kind === "model") {
       var H = cv.rows.map(function (x) { return x.h; });
       var dsC = e.rules.map(function (q, k) {
-        return { label: q.name, data: cv.rows.map(function (row) { return { x: row.h, y: Math.abs(row.err[k]) }; }), borderColor: QUAD_COL[k], backgroundColor: QUAD_COL[k],
-          pointStyle: ROOT_MARK[k], pointRadius: 5, pointBorderColor: C.card, pointBorderWidth: 1.5 };
+        return {
+          label: q.name, data: cv.rows.map(function (row) { return { x: row.h, y: Math.abs(row.err[k]) }; }), borderColor: QUAD_COL[k], backgroundColor: QUAD_COL[k],
+          pointStyle: ROOT_MARK[k], pointRadius: 5, pointBorderColor: C.card, pointBorderWidth: 1.5
+        };
       });
       var last = cv.rows[cv.rows.length - 1], h0 = last.h, h1 = cv.rows[1].h;
       dsC.push({ label: "Slope 2 (h²)", data: [{ x: h0, y: Math.abs(last.err[0]) * 0.45 }, { x: h1, y: Math.abs(last.err[0]) * 0.45 * Math.pow(h1 / h0, 2) }], borderColor: C.ink3, borderDash: [3, 4], borderWidth: 1.4, pointRadius: 0 });
       dsC.push({ label: "Slope 4 (h⁴)", data: [{ x: h0, y: Math.abs(last.err[1]) * 0.45 }, { x: h1, y: Math.abs(last.err[1]) * 0.45 * Math.pow(h1 / h0, 4) }], borderColor: C.ink3, borderDash: [1, 4], borderWidth: 1.8, pointRadius: 0 });
-      mk("ch-conv", { type: "line", data: { datasets: dsC }, options: {
-        interaction: { mode: "nearest", intersect: true },
-        plugins: { tooltip: { callbacks: { title: function (it) { return "h = " + it[0].parsed.x + " h"; }, label: function (it) { return " " + it.dataset.label + ": " + it.parsed.y.toExponential(2) + " kWh"; } } } },
-        scales: {
-          x: valueAxis("Step size h (hours)", { type: "logarithmic", min: 0.1, max: 2.4, afterBuildTicks: function (ax) { ax.ticks = H.map(function (v) { return { value: v }; }); },
-            ticks: { padding: 8, callback: function (v) { return String(v); } } }),
-          y: valueAxis("|Energy error| (kWh)", { type: "logarithmic", afterBuildTicks: decadesOnly, ticks: { padding: 8, callback: function (v) { var e = Math.log10(v); return Math.abs(e - Math.round(e)) < 1e-9 ? supPow(Math.round(e)) : ""; } } })
-        } } });
+      mk("ch-conv", {
+        type: "line", data: { datasets: dsC }, options: {
+          interaction: { mode: "nearest", intersect: true },
+          plugins: { tooltip: { callbacks: { title: function (it) { return "h = " + it[0].parsed.x + " h"; }, label: function (it) { return " " + it.dataset.label + ": " + it.parsed.y.toExponential(2) + " kWh"; } } } },
+          scales: {
+            x: valueAxis("Step size h (hours)", {
+              type: "logarithmic", min: 0.1, max: 2.4, afterBuildTicks: function (ax) { ax.ticks = H.map(function (v) { return { value: v }; }); },
+              ticks: { padding: 8, callback: function (v) { return String(v); } }
+            }),
+            y: valueAxis("|Energy error| (kWh)", { type: "logarithmic", afterBuildTicks: decadesOnly, ticks: { padding: 8, callback: function (v) { var e = Math.log10(v); return Math.abs(e - Math.round(e)) < 1e-9 ? supPow(Math.round(e)) : ""; } } })
+          }
+        }
+      });
     } else if (cv) {
       var steps = cv.rows.map(function (x) { return x.step_min; });
-      mk("ch-conv", { type: "line", data: { datasets: e.rules.map(function (q, k) {
-        return { label: q.name, data: cv.rows.map(function (row) { return { x: row.step_min, y: Math.abs(row.err_pct[k]) }; }), borderColor: QUAD_COL[k], backgroundColor: QUAD_COL[k],
-          pointStyle: ROOT_MARK[k], pointRadius: 5, pointBorderColor: C.card, pointBorderWidth: 1.5 };
-      }) }, options: {
-        interaction: { mode: "nearest", intersect: true },
-        plugins: { tooltip: { callbacks: { title: function (it) { return "Every " + it[0].parsed.x + " min"; }, label: function (it) { return " " + it.dataset.label + ": " + it.parsed.y.toFixed(2) + " %"; } } } },
-        scales: {
-          x: valueAxis("Meter reads every ... minutes", { type: "logarithmic", reverse: true, min: 0.8, max: 150, afterBuildTicks: function (ax) { ax.ticks = steps.map(function (v) { return { value: v }; }); },
-            ticks: { padding: 8, callback: function (v) { return String(v); } } }),
-          y: valueAxis("|Energy error| (%)", { min: 0 })
-        } } });
+      mk("ch-conv", {
+        type: "line", data: {
+          datasets: e.rules.map(function (q, k) {
+            return {
+              label: q.name, data: cv.rows.map(function (row) { return { x: row.step_min, y: Math.abs(row.err_pct[k]) }; }), borderColor: QUAD_COL[k], backgroundColor: QUAD_COL[k],
+              pointStyle: ROOT_MARK[k], pointRadius: 5, pointBorderColor: C.card, pointBorderWidth: 1.5
+            };
+          })
+        }, options: {
+          interaction: { mode: "nearest", intersect: true },
+          plugins: { tooltip: { callbacks: { title: function (it) { return "Every " + it[0].parsed.x + " min"; }, label: function (it) { return " " + it.dataset.label + ": " + it.parsed.y.toFixed(2) + " %"; } } } },
+          scales: {
+            x: valueAxis("Meter reads every ... minutes", {
+              type: "logarithmic", reverse: true, min: 0.8, max: 150, afterBuildTicks: function (ax) { ax.ticks = steps.map(function (v) { return { value: v }; }); },
+              ticks: { padding: 8, callback: function (v) { return String(v); } }
+            }),
+            y: valueAxis("|Energy error| (%)", { min: 0 })
+          }
+        }
+      });
     }
 
     /* leave-one-out bars */
-    mk("ch-loo", { type: "bar", data: { labels: [sn[0], sn[1], sn[2]], datasets: [{ label: "Leave-one-out RMSE (kW)", data: [lo.rmse[0], lo.rmse[1], lo.rmse[2]],
-      backgroundColor: [INTERP_COL[0], INTERP_COL[1], INTERP_COL[2]], borderRadius: 7, borderSkipped: "start", maxBarThickness: 30 }] },
-      options: { indexAxis: "y", plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (it) { return " RMSE " + it.parsed.x.toFixed(3) + " kW"; } } } },
-        scales: { x: valueAxis("kW", { min: 0 }), y: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 700 } } } } } });
+    mk("ch-loo", {
+      type: "bar", data: {
+        labels: [sn[0], sn[1], sn[2]], datasets: [{
+          label: "Leave-one-out RMSE (kW)", data: [lo.rmse[0], lo.rmse[1], lo.rmse[2]],
+          backgroundColor: [INTERP_COL[0], INTERP_COL[1], INTERP_COL[2]], borderRadius: 7, borderSkipped: "start", maxBarThickness: 30
+        }]
+      },
+      options: {
+        indexAxis: "y", plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (it) { return " RMSE " + it.parsed.x.toFixed(3) + " kW"; } } } },
+        scales: { x: valueAxis("kW", { min: 0 }), y: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 700 } } } }
+      }
+    });
 
     /* solver vs model error (log scale, in hours) */
     var solver = r.max_solver_err, model = ok(r.max_model_err_min) ? r.max_model_err_min / 60 : null;
-    mk("ch-sm", { type: "bar", data: { labels: ["Solver error", "Model error"], datasets: [{ label: "Largest error (h)", data: [solver, model],
-      backgroundColor: [C.plum, C.coral], borderRadius: 7, borderSkipped: "start", maxBarThickness: 30 }] },
-      options: { indexAxis: "y", plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (it) {
-        var v = it.parsed.x; return v * 60 >= 1 ? " " + (v * 60).toFixed(2) + " min" : " " + (v * 3.6e6).toFixed(2) + " ms"; } } } },
-        scales: { x: valueAxis("Largest error (hours, log scale)", { type: "logarithmic", min: 1e-8, max: 10,
-          afterBuildTicks: function (ax) { ax.ticks = [1e-8, 1e-6, 1e-4, 1e-2, 1].map(function (v) { return { value: v }; }); },
-          ticks: { padding: 8, maxRotation: 0, autoSkip: false, callback: function (v) {
-          var e = Math.log10(v); return Math.abs(e - Math.round(e)) < 1e-9 && Math.round(e) % 2 === 0 ? supPow(Math.round(e)) : ""; } } }),
-          y: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 700 } } } } } });
+    mk("ch-sm", {
+      type: "bar", data: {
+        labels: ["Solver error", "Model error"], datasets: [{
+          label: "Largest error (h)", data: [solver, model],
+          backgroundColor: [C.plum, C.coral], borderRadius: 7, borderSkipped: "start", maxBarThickness: 30
+        }]
+      },
+      options: {
+        indexAxis: "y", plugins: {
+          legend: { display: false }, tooltip: {
+            callbacks: {
+              label: function (it) {
+                var v = it.parsed.x; return v * 60 >= 1 ? " " + (v * 60).toFixed(2) + " min" : " " + (v * 3.6e6).toFixed(2) + " ms";
+              }
+            }
+          }
+        },
+        scales: {
+          x: valueAxis("Largest error (hours, log scale)", {
+            type: "logarithmic", min: 1e-8, max: 10,
+            afterBuildTicks: function (ax) { ax.ticks = [1e-8, 1e-6, 1e-4, 1e-2, 1].map(function (v) { return { value: v }; }); },
+            ticks: {
+              padding: 8, maxRotation: 0, autoSkip: false, callback: function (v) {
+                var e = Math.log10(v); return Math.abs(e - Math.round(e)) < 1e-9 && Math.round(e) % 2 === 0 ? supPow(Math.round(e)) : "";
+              }
+            }
+          }),
+          y: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 700 } } }
+        }
+      }
+    });
   };
 
   /* ---------------------------------------------------------- tests */
@@ -1071,7 +1151,7 @@
   /* charts draw on canvas, so the bundled fonts must be loaded before the first chart */
   var fontsReady = document.fonts && document.fonts.load
     ? Promise.all(['400 12px "Nunito Sans"', '600 12px "Nunito Sans"', '700 12px "Nunito Sans"', '500 13px "Fredoka"',
-        '600 13px "Fredoka"', '400 12px "JetBrains Mono"'].map(function (f) { return document.fonts.load(f); })).catch(function () {})
+      '600 13px "Fredoka"', '400 12px "JetBrains Mono"'].map(function (f) { return document.fonts.load(f); })).catch(function () { })
     : Promise.resolve();
   fontsReady.then(init);
 })();

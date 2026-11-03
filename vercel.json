@@ -4,7 +4,7 @@
   "rewrites": [
     {
       "source": "/api/:match*",
-      "destination": "https://YOUR-RENDER-APP-NAME.onrender.com/api/:match*"
+      "destination": "https://smart-energy-system-26b2.onrender.com/api/:match*"
     }
   ]
 }
